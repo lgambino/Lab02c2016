@@ -1,17 +1,29 @@
 package dam.isi.frsf.utn.edu.ar.lab02c2016;
 
+import android.app.Activity;
+import android.app.ListActivity;
+import android.app.LoaderManager;
+import android.database.Cursor;
+import android.provider.ContactsContract;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -30,7 +42,10 @@ public class MainActivity extends AppCompatActivity {
 
     public ElementoMenu[] listaBebidas;
     public ElementoMenu[] listaPlatos;
-    public ElementoMenu[] listaPostre;
+    public ElementoMenu[] listaPostres;
+    public ArrayList<String> listaStringBebidas;
+    public ArrayList<String> listaStringPlatos;
+    public ArrayList<String> listaStringPostres;
     public String[] listaHorarios;
 
 
@@ -54,12 +69,26 @@ public class MainActivity extends AppCompatActivity {
         iniciarListas();
 
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, listaHorarios);
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
+        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         horarios.setAdapter(spinnerArrayAdapter);
+
+        ArrayAdapter<String> adaptador = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listaStringPlatos);
+        listado.setAdapter(adaptador);
 
 
     }
 
+
+    public class SpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
+
+        public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+
+        }
+
+        public void onNothingSelected(AdapterView<?> parent) {
+            // Another interface callback
+        }
+    }
 
     public void onRadioButtonClicked(View view) {
 
@@ -104,25 +133,25 @@ public class MainActivity extends AppCompatActivity {
         listaPlatos[10] = new ElementoMenu(11, "Picada 1");
         listaPlatos[11] = new ElementoMenu(12, "Picada 2");
         listaPlatos[12] = new ElementoMenu(13, "Hamburguesa");
-        listaPlatos[12] = new ElementoMenu(14, "Calamares");
+        listaPlatos[13] = new ElementoMenu(14, "Calamares");
 
         // inicia lista de postres
-        listaPostre = new ElementoMenu[15];
-        listaPostre[0] = new ElementoMenu(1, "Helado");
-        listaPostre[1] = new ElementoMenu(2, "Ensalada de Frutas");
-        listaPostre[2] = new ElementoMenu(3, "Macedonia");
-        listaPostre[3] = new ElementoMenu(4, "Brownie");
-        listaPostre[4] = new ElementoMenu(5, "Cheescake");
-        listaPostre[5] = new ElementoMenu(6, "Tiramisu");
-        listaPostre[6] = new ElementoMenu(7, "Mousse");
-        listaPostre[7] = new ElementoMenu(8, "Fondue");
-        listaPostre[8] = new ElementoMenu(9, "Profiterol");
-        listaPostre[9] = new ElementoMenu(10, "Selva Negra");
-        listaPostre[10] = new ElementoMenu(11, "Lemon Pie");
-        listaPostre[11] = new ElementoMenu(12, "KitKat");
-        listaPostre[12] = new ElementoMenu(13, "IceCreamSandwich");
-        listaPostre[13] = new ElementoMenu(14, "Frozen Yougurth");
-        listaPostre[14] = new ElementoMenu(15, "Queso y Batata");
+        listaPostres = new ElementoMenu[15];
+        listaPostres[0] = new ElementoMenu(1, "Helado");
+        listaPostres[1] = new ElementoMenu(2, "Ensalada de Frutas");
+        listaPostres[2] = new ElementoMenu(3, "Macedonia");
+        listaPostres[3] = new ElementoMenu(4, "Brownie");
+        listaPostres[4] = new ElementoMenu(5, "Cheescake");
+        listaPostres[5] = new ElementoMenu(6, "Tiramisu");
+        listaPostres[6] = new ElementoMenu(7, "Mousse");
+        listaPostres[7] = new ElementoMenu(8, "Fondue");
+        listaPostres[8] = new ElementoMenu(9, "Profiterol");
+        listaPostres[9] = new ElementoMenu(10, "Selva Negra");
+        listaPostres[10] = new ElementoMenu(11, "Lemon Pie");
+        listaPostres[11] = new ElementoMenu(12, "KitKat");
+        listaPostres[12] = new ElementoMenu(13, "IceCreamSandwich");
+        listaPostres[13] = new ElementoMenu(14, "Frozen Yougurth");
+        listaPostres[14] = new ElementoMenu(15, "Queso y Batata");
 
         listaHorarios = new String[6];
         listaHorarios[0] = new String("20:00");
@@ -131,6 +160,24 @@ public class MainActivity extends AppCompatActivity {
         listaHorarios[3] = new String("21:30");
         listaHorarios[4] = new String("22:00");
         listaHorarios[5] = new String("22:30");
+
+
+        listaStringBebidas = new ArrayList<String>();
+        for(int i=0; i<listaBebidas.length; i++){
+            listaStringBebidas.add(listaBebidas[i].toString());
+        }
+
+        listaStringPlatos = new ArrayList<String>();
+        for(int i=0; i<listaPlatos.length; i++){
+            listaStringPlatos.add(listaPlatos[i].toString());
+        }
+
+        listaStringPostres = new ArrayList<String>();
+        for(int i=0; i<listaPostres.length; i++){
+            listaStringPostres.add(listaPostres[i].toString());
+        }
     }
+
+
 
 }
