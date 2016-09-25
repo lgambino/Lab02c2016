@@ -2,6 +2,8 @@ package dam.isi.frsf.utn.edu.ar.lab02c2016;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -29,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     public ElementoMenu[] listaBebidas;
     public ElementoMenu[] listaPlatos;
     public ElementoMenu[] listaPostre;
+    public String[] listaHorarios;
 
 
     @Override
@@ -48,16 +51,32 @@ public class MainActivity extends AppCompatActivity {
          reiniciar = (Button) findViewById(R.id.b_reiniciar);
          listado = (ListView) findViewById(R.id.lv_listado);
 
-
-
-
         iniciarListas();
 
-
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, listaHorarios);
+        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); // The drop down view
+        horarios.setAdapter(spinnerArrayAdapter);
 
 
     }
 
+
+    public void onRadioButtonClicked(View view) {
+
+        boolean checked = ((RadioButton) view).isChecked();
+
+        switch(view.getId()) {
+            case R.id.rb_plato:
+                if (checked)
+                    break;
+            case R.id.rb_postre:
+                if (checked)
+                    break;
+            case R.id.rb_bebidas:
+                if (checked)
+                    break;
+        }
+    }
 
 
     private void iniciarListas() { // inicia lista de bebidas
@@ -104,6 +123,14 @@ public class MainActivity extends AppCompatActivity {
         listaPostre[12] = new ElementoMenu(13, "IceCreamSandwich");
         listaPostre[13] = new ElementoMenu(14, "Frozen Yougurth");
         listaPostre[14] = new ElementoMenu(15, "Queso y Batata");
+
+        listaHorarios = new String[6];
+        listaHorarios[0] = new String("20:00");
+        listaHorarios[1] = new String("20:30");
+        listaHorarios[2] = new String("21:00");
+        listaHorarios[3] = new String("21:30");
+        listaHorarios[4] = new String("22:00");
+        listaHorarios[5] = new String("22:30");
     }
 
 }

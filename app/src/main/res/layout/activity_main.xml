@@ -38,7 +38,8 @@
             <ToggleButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Delivery"
+                android:textOff="Delivery"
+                android:textOn="Delivery"
                 android:id="@+id/reservar_mesa"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true"
@@ -128,7 +129,7 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Confirmar Pedido"
+                    android:text="Terminar"
                     android:id="@+id/b_confirmar" />
 
                 <Button
