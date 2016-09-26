@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -167,12 +168,21 @@ public class MainActivity extends AppCompatActivity {
         confirmar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
+                agregar.setEnabled(false);
+                reservarMesa.setEnabled(false);
+                horarios.setEnabled(false);
+                reservarAntes.setEnabled(false);
 
             }
         });
 
         reiniciar.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+
+                agregar.setEnabled(true);
+                reservarMesa.setEnabled(true);
+                horarios.setEnabled(true);
+                reservarAntes.setEnabled(true);
 
                 elementos.clear();
                 cuentaTotal = new ElementoMenu();
@@ -183,9 +193,8 @@ public class MainActivity extends AppCompatActivity {
                 listado.clearChoices();
                 listado.setAdapter(null);
 
-                rbPlato.setChecked(false);
-                rbPostre.setChecked(false);
-                rbBebida.setChecked(false);
+                RadioGroup radioGroup = (RadioGroup)findViewById(R.id.radio_group);
+                radioGroup.clearCheck();
 
                 resultados.setText("");
                 cuenta.setText("");
