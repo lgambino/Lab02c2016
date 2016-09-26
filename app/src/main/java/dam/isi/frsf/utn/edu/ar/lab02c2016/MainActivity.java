@@ -3,6 +3,7 @@ package dam.isi.frsf.utn.edu.ar.lab02c2016;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.app.LoaderManager;
+import android.content.Context;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 import android.support.v4.content.CursorLoader;
@@ -20,6 +21,7 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.util.ArrayList;
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private Spinner horarios;
     private Switch reservarAntes;
     private TextView resultados;
+    private TextView cuenta;
     private RadioButton rbPlato;
     private RadioButton rbPostre;
     private RadioButton rbBebida;
@@ -40,6 +43,11 @@ public class MainActivity extends AppCompatActivity {
     private Button reiniciar;
     private ListView listado;
 
+    public ArrayList<ElementoMenu> elementos;
+    public ElementoMenu itemSeleccionado;
+    public ElementoMenu cuentaTotal;
+    public int opcion;
+    public Integer posicion;
     public ElementoMenu[] listaBebidas;
     public ElementoMenu[] listaPlatos;
     public ElementoMenu[] listaPostres;
@@ -58,12 +66,13 @@ public class MainActivity extends AppCompatActivity {
          horarios = (Spinner) findViewById(R.id.spinner_horarios);
          reservarAntes = (Switch) findViewById(R.id.reservar_antes);
          resultados = (TextView) findViewById(R.id.txt_resultados);
+         cuenta = (TextView) findViewById(R.id.txt_cuenta_total);
          rbPlato = (RadioButton) findViewById(R.id.rb_plato);
          rbPostre = (RadioButton) findViewById(R.id.rb_postre);
          rbBebida = (RadioButton) findViewById(R.id.rb_bebidas);
-         agregar = (Button) findViewById(R.id.b_agregar);
-         confirmar = (Button) findViewById(R.id.b_confirmar);
-         reiniciar = (Button) findViewById(R.id.b_reiniciar);
+         agregar = (Button) findViewById(R.id.btn_agregar);
+         confirmar = (Button) findViewById(R.id.btn_confirmar);
+         reiniciar = (Button) findViewById(R.id.btn_reiniciar);
          listado = (ListView) findViewById(R.id.lv_listado);
 
         iniciarListas();
@@ -72,11 +81,120 @@ public class MainActivity extends AppCompatActivity {
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         horarios.setAdapter(spinnerArrayAdapter);
 
-        ArrayAdapter<String> adaptador = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, listaStringPlatos);
-        listado.setAdapter(adaptador);
+        elementos = new ArrayList<ElementoMenu>();
+        itemSeleccionado = new ElementoMenu();
+        cuentaTotal = new ElementoMenu();
+        cuentaTotal.setNombre("Total");
+        cuentaTotal.setPrecio((double) 0);
+        opcion = 0;
+        posicion = -1;
 
 
+        listado.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View v, int position, long arg3){
+                posicion = position;
+            }
+        });
+
+
+        agregar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                String text = "";
+
+                itemSeleccionado = null;
+
+                switch (opcion){
+                    case 0:
+                        text = "Seleccione una opción: Platos, Postres o Bebidas.";
+                        break;
+                    case 1:
+                        if(posicion==-1){
+                            text = "Seleccione un plato.";
+                            break;
+                        }
+                        itemSeleccionado = listaPlatos[posicion];
+                        text = itemSeleccionado.getNombre() + " agregado/a.";
+                        break;
+                    case 2:
+                        if(posicion==-1){
+                            text = "Seleccione un postre.";
+                            break;
+                        }
+                        itemSeleccionado = listaPostres[posicion];
+                        text = itemSeleccionado.getNombre() + " agregado/a.";
+                        break;
+                    case 3:
+                        if(posicion==-1){
+                            text = "Seleccione una bebida.";
+                            break;
+                        }
+                        itemSeleccionado = listaBebidas[posicion];
+                        text = itemSeleccionado.getNombre() + " agregado/a.";
+                        break;
+                    default:
+                        break;
+                }
+
+                Context context = getApplicationContext();
+                int duration = Toast.LENGTH_SHORT;
+                Toast toast = Toast.makeText(context, text, duration);
+                toast.show();
+
+                if(itemSeleccionado!=null){
+                    elementos.add(itemSeleccionado);
+                    Double aux = cuentaTotal.getPrecio();
+                    aux = aux + itemSeleccionado.getPrecio();
+                    cuentaTotal.setPrecio(aux);
+                    cuenta.setText(cuentaTotal.toString());
+
+                    String resultadosAux = "";
+
+                    for(ElementoMenu e: elementos){
+                        resultadosAux = resultadosAux + e.toString() + "\r\n";
+                    }
+
+                    resultados.setText(resultadosAux);
+                }
+
+                itemSeleccionado = new ElementoMenu();
+                posicion = -1;
+                listado.clearChoices();
+            }
+        });
+
+        confirmar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+
+            }
+        });
+
+        reiniciar.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                elementos.clear();
+                cuentaTotal = new ElementoMenu();
+                cuentaTotal.setNombre("Total");
+                cuentaTotal.setPrecio((double) 0);
+                opcion = 0;
+                posicion = -1;
+                listado.clearChoices();
+                listado.setAdapter(null);
+
+                rbPlato.setChecked(false);
+                rbPostre.setChecked(false);
+                rbBebida.setChecked(false);
+
+                resultados.setText("");
+                cuenta.setText("");
+            }
+        });
     }
+
+
+
 
 
     public class SpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
@@ -94,15 +212,28 @@ public class MainActivity extends AppCompatActivity {
 
         boolean checked = ((RadioButton) view).isChecked();
 
+        ArrayAdapter<String> adaptadorBebidas = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_single_choice, listaStringBebidas);
+        ArrayAdapter<String> adaptadorPlatos = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_single_choice, listaStringPlatos);
+        ArrayAdapter<String> adaptadorPostres = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_single_choice, listaStringPostres);
+
+        listado.clearChoices();
+        posicion = -1;
+
         switch(view.getId()) {
             case R.id.rb_plato:
                 if (checked)
+                    opcion = 1;
+                    listado.setAdapter(adaptadorPlatos);
                     break;
             case R.id.rb_postre:
                 if (checked)
+                    opcion = 2;
+                    listado.setAdapter(adaptadorPostres);
                     break;
             case R.id.rb_bebidas:
                 if (checked)
+                    opcion = 3;
+                    listado.setAdapter(adaptadorBebidas);
                     break;
         }
     }
@@ -177,7 +308,4 @@ public class MainActivity extends AppCompatActivity {
             listaStringPostres.add(listaPostres[i].toString());
         }
     }
-
-
-
 }
